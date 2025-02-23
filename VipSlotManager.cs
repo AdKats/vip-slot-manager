@@ -48,7 +48,7 @@ using PRoCon.Core.Players.Items;
 using PRoCon.Core.Battlemap;
 using PRoCon.Core.Maps;
 
-using MySql.Data.MySqlClient;
+using MySqlConnector;
 
 namespace PRoConEvents {
 // Aliases
@@ -100,7 +100,7 @@ private Dictionary<String, DateTime> onJoinSpammer = new Dictionary<string, Date
 private Dictionary<String, String> NameGuidList = new Dictionary<string, string>();
 private Dictionary<String, int> AggressiveVips = new Dictionary<string, int>();
 
-private MySql.Data.MySqlClient.MySqlTransaction MySqlTrans;
+private MySqlTransaction MySqlTrans;
 
 private string SettingStrSqlHostname;
 private string SettingStrSqlPort;
