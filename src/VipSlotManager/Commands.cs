@@ -47,7 +47,7 @@ namespace PRoConEvents
                                     {
                                         tmp_strdays = tmp_days.ToString();
                                     }
-                                    tmp_pname = this.strSqlProtection(regexResult.Groups[1].Value);
+                                    tmp_pname = regexResult.Groups[1].Value;
                                     Thread SQLWorker1 = new Thread(new ThreadStart(delegate ()
                                     {
                                         if (this.addvip(tmp_pname, tmp_strdays, "PluginCmd"))
@@ -81,7 +81,7 @@ namespace PRoConEvents
                             if (regexResult.Groups[1].Value.Length > 2)
                             {
                                 DebugWrite("[OnChat] [PluginCmd] ^bRemove^n VIP Slot: " + this.strGreen(regexResult.Groups[1].Value.Replace(" ", "")) + "  (by command from other plugin)", 4);
-                                tmp_pname = this.strSqlProtection(regexResult.Groups[1].Value);
+                                tmp_pname = regexResult.Groups[1].Value;
                                 Thread SQLWorker2 = new Thread(new ThreadStart(delegate ()
                                 {
                                     if (this.removevip(tmp_pname))
@@ -106,8 +106,8 @@ namespace PRoConEvents
                             DebugWrite("[OnChat] [PluginCmd] Command from other Plugin (/vsm-changevip)", 4);
                             if ((regexResult.Groups[1].Value.Length > 2) && (regexResult.Groups[2].Value.Length > 2))
                             {
-                                tmp_pname_old = this.strSqlProtection(regexResult.Groups[1].Value);
-                                tmp_pname = this.strSqlProtection(regexResult.Groups[2].Value);
+                                tmp_pname_old = regexResult.Groups[1].Value;
+                                tmp_pname = regexResult.Groups[2].Value;
                                 Thread SQLWorker6 = new Thread(new ThreadStart(delegate ()
                                 {
                                     if (this.changevipname(tmp_pname_old, tmp_pname))
@@ -460,8 +460,8 @@ namespace PRoConEvents
                                     regexResult = regexMatch;
                                     if ((regexResult.Groups[1].Value.Length > 2) && (regexResult.Groups[2].Value.Length > 2))
                                     {
-                                        tmp_pname_old = this.strSqlProtection(regexResult.Groups[1].Value);
-                                        tmp_pname = this.strSqlProtection(regexResult.Groups[2].Value);
+                                        tmp_pname_old = regexResult.Groups[1].Value;
+                                        tmp_pname = regexResult.Groups[2].Value;
                                         if (this.changevipname(tmp_pname_old, tmp_pname))
                                         {
                                             DebugWrite("[OnChat] [IngameAdmin] Change VIP Slot playername from " + this.strGreen(tmp_pname_old) + " to " + this.strGreen(tmp_pname) + " for all " + this.SettingGameType + " Server Groups in SQL database  (ingame admin " + tmpPlayername + ")", 2);

@@ -525,71 +525,45 @@ PapaCharlie9 (forum.myrcon.com) - Basic Plugin Template Part (BasicPlugin.cs)<br
                             //check adkats plugin conflict
                             //check if table exist or not in SQL database
                             Boolean AdkatsTableExist = false;
-                            String SQL = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='adkats_settings' AND table_schema='" + this.SettingStrSqlDatabase + "'";
-                            DebugWrite("[Task] [Check] Try to get Adkats settings. SQL COMMAND (MyCommand): " + SQL, 5);
-                            using (MySqlCommand MyCommand = new MySqlCommand(SQL))
+                            String SQL = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME='adkats_settings' AND table_schema=@Database";
+                            DebugWrite("[Task] [Check] Try to get Adkats settings. SQL COMMAND: " + SQL, 5);
+                            var tableRows = Con.Query(SQL, new { Database = this.SettingStrSqlDatabase });
+                            foreach (var row in tableRows)
                             {
-                                DataTable resultTable = this.SQLquery(MyCommand);
-                                if (resultTable.Rows != null)
+                                String tmp_tablename = (String)row.TABLE_NAME;
+                                if (tmp_tablename == "adkats_settings")
                                 {
-                                    String tmp_tablename = String.Empty;
-                                    foreach (DataRow row in resultTable.Rows)
-                                    {
-                                        //reading sql
-                                        tmp_tablename = row["TABLE_NAME"].ToString();
-                                        if (tmp_tablename == "adkats_settings")
-                                        {
-                                            // yes, table 'adkats_settings' exist in SQL DB!!
-                                            AdkatsTableExist = true;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    ConsoleError("[Task] [Check] [AdkatsSettings] ERROR: Can NOT receive table informations from SQL. Shutdown Plugin");
-                                    this.ExecuteCommand("procon.protected.plugins.enable", "VipSlotManager", "False");
-                                    return;
+                                    AdkatsTableExist = true;
                                 }
                             }
                             if (AdkatsTableExist)
                             {
                                 //check 3. adkats plugin, "a16 Orchestration Settings, Feed Reserved Slots" = False
-                                SQL = "SELECT `setting_value` FROM `adkats_settings` WHERE setting_name = 'Feed Server Reserved Slots' AND server_id IN (SELECT ServerID as ServerID FROM `" + this.SettingStrSqlDatabase + "`.`tbl_server` WHERE `IP_Address` = '" + this.ServerIP + ":" + this.ServerPort + "')";
-                                DebugWrite("[Task] [Check] [AdkatsSettings] Try to get Adkats setting 'Feed Server Reserved Slots'. SQL COMMAND (MyCommand): " + SQL, 5);
-                                using (MySqlCommand MyCommand = new MySqlCommand(SQL))
+                                SQL = "SELECT `setting_value` FROM `adkats_settings` WHERE setting_name = 'Feed Server Reserved Slots' AND server_id IN (SELECT ServerID as ServerID FROM `" + this.SettingStrSqlDatabase + "`.`tbl_server` WHERE `IP_Address` = @IpAddress)";
+                                DebugWrite("[Task] [Check] [AdkatsSettings] Try to get Adkats setting 'Feed Server Reserved Slots'. SQL COMMAND: " + SQL, 5);
+                                var settingRows = Con.Query(SQL, new { IpAddress = this.ServerIP + ":" + this.ServerPort });
+                                foreach (var row in settingRows)
                                 {
-                                    DataTable resultTable = this.SQLquery(MyCommand);
-                                    if (resultTable.Rows != null)
+                                    String tmp_adkatsSetting = (String)row.setting_value;
+                                    if (tmp_adkatsSetting == "True")
                                     {
-                                        String tmp_adkatsSetting = String.Empty;
-                                        foreach (DataRow row in resultTable.Rows)
-                                        {
-                                            tmp_adkatsSetting = row["setting_value"].ToString();
-                                            if (tmp_adkatsSetting == "True")
-                                            {
-                                                //problem found! adkats still manage the reserved slot list
-                                                ConsoleError("[Task] [Check] [AdkatsSettings] ERROR: Plugin conflict with current settings from Adkats!");
-                                                ConsoleError("[Task] [Check] [AdkatsSettings] ERROR: Adkats Plugin still manage the reserved VIP slot. IMPORTANT: You must disable this function in Adkats! Open the settings from Adkats Plugin. Then go to ^0^8^bAdkats  >  A16. Orchestration Settings  >  Feed Server Reserved Slots  > False^n^0");
-                                                //shutdown plugin
-                                                this.ExecuteCommand("procon.protected.plugins.enable", "VipSlotManager", "False");
-                                                return;
-                                            }
-                                            else if (tmp_adkatsSetting == "False")
-                                            {
-                                                DebugWrite("[Task] [Check] [AdkatsSettings] Adkats Plugin do not manage the reserved VIP slot", 5);
-                                            }
-                                        }
+                                        //problem found! adkats still manage the reserved slot list
+                                        ConsoleError("[Task] [Check] [AdkatsSettings] ERROR: Plugin conflict with current settings from Adkats!");
+                                        ConsoleError("[Task] [Check] [AdkatsSettings] ERROR: Adkats Plugin still manage the reserved VIP slot. IMPORTANT: You must disable this function in Adkats! Open the settings from Adkats Plugin. Then go to ^0^8^bAdkats  >  A16. Orchestration Settings  >  Feed Server Reserved Slots  > False^n^0");
+                                        //shutdown plugin
+                                        this.ExecuteCommand("procon.protected.plugins.enable", "VipSlotManager", "False");
+                                        return;
                                     }
-                                    else
+                                    else if (tmp_adkatsSetting == "False")
                                     {
-                                        DebugWrite("[Task] [Check] [AdkatsSettings] INFO: Please make sure that Adkats do not manage the reserved VIP Slots. Open the settings from Adkats Plugin. Then go to ^0^8^bAdkats  >  A16. Orchestration Settings  >  Feed Server Reserved Slots  > False^n^0", 3);
+                                        DebugWrite("[Task] [Check] [AdkatsSettings] Adkats Plugin do not manage the reserved VIP slot", 5);
                                     }
                                 }
                             }
                         }
                         catch (Exception c)
                         {
-                            ConsoleError("[Task] [Check] Can not read the current settings from Adkats Plugin. SQL Error (MyCommand): " + c);
+                            ConsoleError("[Task] [Check] Can not read the current settings from Adkats Plugin. SQL Error: " + c);
                         }
                     }
 
@@ -922,8 +896,6 @@ PapaCharlie9 (forum.myrcon.com) - Basic Plugin Template Part (BasicPlugin.cs)<br
         }
 
         private String SqlLogin() { return "Server=" + this.SettingStrSqlHostname + ";" + "Port=" + this.SettingStrSqlPort + ";" + "Database=" + this.SettingStrSqlDatabase + ";" + "Uid=" + this.SettingStrSqlUsername + ";" + "Pwd=" + this.SettingStrSqlPassword + ";" + "Connection Timeout=5;"; }
-
-        private String strSqlProtection(String StrInp) { return StrInp.Replace("\"", "").Replace(";", "").Replace(",", "").Replace("(", "").Replace(")", "").Replace("{", "").Replace("}", "").Replace("[", "").Replace("]", "").Replace("'", "").Replace("\u2018", "").Replace("\u2019", "").Replace(" ", ""); }
 
         private String strGreen(String StrInp) { return "^b^2" + StrInp + "^0^n"; }
 
