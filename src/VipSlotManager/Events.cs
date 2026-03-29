@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading;
 
 using PRoCon.Core.Players;
@@ -169,7 +168,7 @@ namespace PRoConEvents
                                         Int32 tmp_retry_counter = 0;
                                         while (tmp_retry_counter < 10)
                                         {
-                                            Thread.Sleep(12000);
+                                            Thread.Sleep(5000);
                                             tmp_retry_counter++;
                                             if (this.NameGuidList.ContainsKey(soldierName))
                                             {
