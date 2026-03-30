@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
+using PRoCon.Core;
 using PRoCon.Core.Players;
+using PRoCon.Core.Players.Items;
 
 namespace PRoConEvents
 {

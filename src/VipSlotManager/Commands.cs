@@ -2,6 +2,8 @@ using System;
 using System.Text.RegularExpressions;
 using System.Threading;
 
+using PRoCon.Core;
+
 namespace PRoConEvents
 {
     public partial class VipSlotManager
