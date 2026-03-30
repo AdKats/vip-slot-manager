@@ -1,0 +1,6 @@
+/home/andrew/local_projects/procon_plugins/vip-slot-manager/obj/Debug/net8.0/VipSlotManager.csproj.AssemblyReference.cache
+/home/andrew/local_projects/procon_plugins/vip-slot-manager/obj/Debug/net8.0/VipSlotManager.GeneratedMSBuildEditorConfig.editorconfig
+/home/andrew/local_projects/procon_plugins/vip-slot-manager/obj/Debug/net8.0/VipSlotManager.AssemblyInfoInputs.cache
+/home/andrew/local_projects/procon_plugins/vip-slot-manager/obj/Debug/net8.0/VipSlotManager.AssemblyInfo.cs
+/home/andrew/local_projects/procon_plugins/vip-slot-manager/obj/Debug/net8.0/VipSlotManager.csproj.CoreCompileInputs.cache
+/home/andrew/local_projects/procon_plugins/vip-slot-manager/obj/Debug/net8.0/VipSlotManager.sourcelink.json
